@@ -1,7 +1,6 @@
 #include <windows.h>
 
 #include <iostream>
-#include <bitset>
 #include <string>
 
 #include <winrt/Windows.Foundation.h>
@@ -81,7 +80,7 @@ std::wostream & operator<<(std::wostream & out, BluetoothLEAdvertisementType typ
 
 std::wostream & operator<<(std::wostream & out, BluetoothLEAdvertisementFlags flags)
 {
-	out << L'[';
+	out << L"[ ";
 
 	if ((flags & BluetoothLEAdvertisementFlags::LimitedDiscoverableMode) != BluetoothLEAdvertisementFlags::None)
 	{
@@ -104,7 +103,7 @@ std::wostream & operator<<(std::wostream & out, BluetoothLEAdvertisementFlags fl
 		out << L"DualModeHostCapable,";
 	}
 
-	out << L']';
+	out << L" ]";
 
 	return out;
 }
@@ -151,7 +150,7 @@ std::wostream & operator<<(std::wostream & out, const IReference<T> & ref)
 template<typename T>
 std::wostream & operator<<(std::wostream & out, const IVector<T> & vector)
 {
-	out << L'[';
+	out << L"[ ";
 
 	for (decltype(vector.Size()) index{}; index < vector.Size(); ++index)
 	{
@@ -161,7 +160,9 @@ std::wostream & operator<<(std::wostream & out, const IVector<T> & vector)
 			out << L", " << vector.GetAt(index);
 	}
 
-	return out << L']';
+	out << L" ]";
+
+	return out;
 }
 
 std::wostream & operator<<(std::wostream & out, const BluetoothLEAdvertisementReceivedEventArgs & args)
