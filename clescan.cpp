@@ -1,6 +1,8 @@
 #include <windows.h>
 
 #include <iostream>
+#include <iomanip>
+#include <ctime>
 #include <string>
 
 #include <winrt/Windows.Foundation.h>
@@ -108,6 +110,14 @@ std::wostream & operator<<(std::wostream & out, BluetoothLEAdvertisementFlags fl
 	return out;
 }
 
+std::wostream & operator<<(std::wostream & out, const winrt::hstring & str)
+{
+	if (str.empty())
+		return out << L"null";
+
+	return out << str.c_str();
+}
+
 std::wostream & operator<<(std::wostream & out, const winrt::guid & guid)
 {
 	wchar_t buff[50]{};
@@ -127,6 +137,17 @@ std::wostream & operator<<(std::wostream & out, const IBuffer & buff)
 	{
 		out << *p++;
 	}
+
+	return out;
+}
+
+std::wostream & operator<<(std::wostream & out, const DateTime & time)
+{
+	auto tt = winrt::clock::to_time_t(time);
+	std::tm tm{};
+
+	if (::localtime_s(&tm, &tt) == 0)
+		out << std::put_time(&tm, L"%Y-%m-%d %H:%M:%S %z");
 
 	return out;
 }
@@ -174,11 +195,14 @@ std::wostream & operator<<(std::wostream & out, const BluetoothLEAdvertisementRe
 	out << L"  Address: " << bluetooth_addr(args.BluetoothAddress()) << std::endl;
 	out << L"  AdvertisementType: " << args.AdvertisementType() << std::endl;
 	out << L"  Advertisement:" << std::endl;
-	out << L"    LocalName: " << advertisement.LocalName().c_str() << std::endl;
+	out << L"    LocalName: " << advertisement.LocalName() << std::endl;
 	out << L"    Flags: " << advertisement.Flags() << std::endl;
 	out << L"    ServiceUuids: " << advertisement.ServiceUuids() << std::endl;
 	out << L"    DataSections: " << advertisement.DataSections() << std::endl;
-	out << L"    ManufacturerData: " << advertisement.ManufacturerData();
+	out << L"    ManufacturerData: " << advertisement.ManufacturerData() << std::endl;
+	out << L"  RawSignalStrengthInDBm: " << args.RawSignalStrengthInDBm() << std::endl;
+	out << L"  TransmitPowerLevelInDBm: " << args.TransmitPowerLevelInDBm() << std::endl;
+	out << L"  Timestamp: " << args.Timestamp();
 
 	return out;
 }
